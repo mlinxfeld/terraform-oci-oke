@@ -2,7 +2,7 @@
 resource "oci_containerengine_cluster" "FoggyKitchenOKECluster" {
   #depends_on = [oci_identity_policy.FoggyKitchenOKEPolicy1]
   compartment_id     = oci_identity_compartment.FoggyKitchenCompartment.id
-  kubernetes_version = data.oci_containerengine_cluster_option.FoggyKitchenOKEClusterOption.kubernetes_versions.0
+  kubernetes_version = var.kubernetes_version
   name               = var.ClusterName
   vcn_id             = oci_core_vcn.FoggyKitchenVCN.id
 
@@ -25,7 +25,7 @@ resource "oci_containerengine_node_pool" "FoggyKitchenOKENodePool" {
   #depends_on = [oci_identity_policy.FoggyKitchenOKEPolicy1]
   cluster_id         = oci_containerengine_cluster.FoggyKitchenOKECluster.id
   compartment_id     = oci_identity_compartment.FoggyKitchenCompartment.id
-  kubernetes_version = data.oci_containerengine_node_pool_option.FoggyKitchenOKEClusterNodePoolOption.kubernetes_versions.0
+  kubernetes_version = var.kubernetes_version
   name               = "FoggyKitchenOKENodePool"
   node_image_name    = var.Images[0]
   node_shape         = var.Shapes[0]

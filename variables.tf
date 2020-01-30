@@ -23,6 +23,10 @@ variable "node_pool_quantity_per_subnet" {
   default = 2
 }
 
+variable "kubernetes_version" {
+  default = "v1.14.8"
+}
+
 variable "ADs" {
   default = ["unja:EU-FRANKFURT-1-AD-1", "unja:EU-FRANKFURT-1-AD-2", "unja:EU-FRANKFURT-1-AD-3"]
 }
