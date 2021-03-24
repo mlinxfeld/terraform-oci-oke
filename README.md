@@ -21,10 +21,20 @@ Unpacking objects: 100% (10/10), done.
 
 [opc@terraform-server ~]$ cd terraform-oci-oke/
 
-[opc@terraform-server terraform-oci-oke]$ ls
-oke_cluster.tf      oke_datasources.tf  oke_network.tf  provider.tf
-oke_compartment.tf  oke_kube_config.tf  oke_policy.tf   variables.tf
-README.md
+[opc@terraform-server terraform-oci-oke]$ ls -latr
+-rw-r--r--   1 opc opc   144 18 gru  2019 compartment.tf
+-rw-r--r--   1 opc opc   468 18 gru  2019 oke_kube_config.tf
+-rw-r--r--   1 opc opc   249 18 gru  2019 oke_policy.tf
+drwxr-xr-x  58 opc opc  1856 13 sty 14:46 ..
+-rw-r--r--   1 opc opc   203 24 mar 12:25 provider.tf
+-rw-r--r--   1 opc opc   998 24 mar 12:45 variables.tf
+-rw-r--r--   1 opc opc  2368 24 mar 12:45 network.tf
+-rw-r--r--   1 opc opc   348 24 mar 12:47 datasources.tf
+-rw-r--r--   1 opc opc  1045 24 mar 12:47 outputs.tf
+-rw-r--r--   1 opc opc  1937 24 mar 12:47 oke_cluster.tf
+drwxr-xr-x  14 opc opc   448 24 mar 13:32 .git
+drwxr-xr-x  15 opc opc   480 24 mar 13:33 .
+-rw-r--r--@  1 opc opc  8296 24 mar 13:35 README.md
 ```
 
 ### STEP 2.
@@ -65,22 +75,21 @@ Run *terraform init* with upgrade option just to download the lastest neccesary 
 ```
 [opc@terraform-server terraform-oci-oke]$ terraform init -upgrade
 
+
 Initializing the backend...
 
 Initializing provider plugins...
-- Checking for available provider plugins...
-- Downloading plugin for provider "null" (hashicorp/null) 2.1.2...
-- Downloading plugin for provider "oci" (hashicorp/oci) 3.54.0...
+- Finding latest version of hashicorp/local...
+- Finding latest version of hashicorp/oci...
+- Installing hashicorp/oci v4.18.0...
+- Installed hashicorp/oci v4.18.0 (signed by HashiCorp)
+- Installing hashicorp/local v2.1.0...
+- Installed hashicorp/local v2.1.0 (signed by HashiCorp)
 
-The following providers do not have any version constraints in configuration,
-so the latest version was installed.
-
-To prevent automatic upgrades to new major versions that may contain breaking
-changes, it is recommended to add version = "..." constraints to the
-corresponding provider blocks in configuration, with the constraint strings
-suggested below.
-
-* provider.null: version = "~> 2.1"
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.
 
 Terraform has been successfully initialized!
 
@@ -120,7 +129,7 @@ Terraform will perform the following actions:
 
 (...)
 
-Plan: 12 to add, 0 to change, 0 to destroy.
+Plan: 10 to add, 0 to change, 0 to destroy.
 
 Do you want to perform these actions?
   Terraform will perform the actions described above.
@@ -134,35 +143,46 @@ oci_core_vcn.FoggyKitchenVCN: Creating...
 
 (...)
 
-Apply complete! Resources: 12 added, 0 changed, 0 destroyed.
+local_file.FoggyKitchenKubeConfigFile: Creating...
+local_file.FoggyKitchenKubeConfigFile: Creation complete after 0s [id=75873c1ec199bf2e88ba41b687f4e8b63616f5ac]
+oci_containerengine_node_pool.FoggyKitchenOKENodePool: Creation complete after 7s [id=ocid1.nodepool.oc1.iad.aaaaaaaaaftdizbqgm2gkodggzsdmyjqgqytcolehazgcnlcgnzwcojzgbsd]
+
+Apply complete! Resources: 10 added, 0 changed, 0 destroyed.
 
 Outputs:
 
 FoggyKitchenOKECluster = {
-  "id" = "ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3tcyjqgezdkntdmmztonbsmnrtsyrwgu4taobvmc2tsobtg43d"
-  "kubernetes_version" = "v1.14.8"
+  "id" = "ocid1.cluster.oc1.iad.aaaaaaaawxgqsiqjmwb7m3scdk3awgj4xjc6p3mzkusqc6zivcbpcau3dxya"
+  "kubernetes_version" = "v1.19.7"
   "name" = "FoggyKitchenOKECluster"
 }
 FoggyKitchenOKENodePool = {
-  "id" = "ocid1.nodepool.oc1.eu-frankfurt-1.aaaaaaaaae3tkmrtg42wcndbge2temldgi4tizrugu4danrugnzdkzjsgrrd"
-  "kubernetes_version" = "v1.14.8"
+  "id" = "ocid1.nodepool.oc1.iad.aaaaaaaaaftdizbqgm2gkodggzsdmyjqgqytcolehazgcnlcgnzwcojzgbsd"
+  "kubernetes_version" = "v1.19.7"
   "name" = "FoggyKitchenOKENodePool"
-  "subnet_ids" = [
-    "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaahfpyomcpa65wbwnmbnxii7dsuchuzbi52xvhh5v7ijsn2vay6pdq",
-    "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaaqc6vvr3hhxg3mcdej4asrmhusvq5bv6uxwqzkitkhog3prbtxrtq",
-  ]
+  "subnet_ids" = toset([
+    "ocid1.subnet.oc1.iad.aaaaaaaa2sy3vwoxfhvv4dgyamo36ofzz6yah37xoakbffk4pldzzre3eoma",
+  ])
 }
 FoggyKitchen_Cluster_Kubernetes_Versions = [
-  [
-    "v1.13.5",
-    "v1.14.8",
-  ],
+  tolist([
+    "v1.16.8",
+    "v1.16.15",
+    "v1.17.9",
+    "v1.17.13",
+    "v1.18.10",
+    "v1.19.7",
+  ]),
 ]
 FoggyKitchen_Cluster_NodePool_Kubernetes_Version = [
-  [
-    "v1.13.5",
-    "v1.14.8",
-  ],
+  tolist([
+    "v1.16.8",
+    "v1.16.15",
+    "v1.17.9",
+    "v1.17.13",
+    "v1.18.10",
+    "v1.19.7",
+  ]),
 ]
 ```
 
@@ -201,7 +221,7 @@ Terraform will perform the following actions:
       - time_created   = "2019-12-02 19:22:17.767 +0000 UTC" -> null
     }
 
-Plan: 0 to add, 0 to change, 12 to destroy.
+Plan: 0 to add, 0 to change, 10 to destroy.
 
 Do you really want to destroy all resources?
   Terraform will destroy all your managed infrastructure, as shown above.
@@ -216,5 +236,5 @@ oci_core_vcn.FoggyKitchenVCN: Destruction complete after 1s
 oci_identity_compartment.FoggyKitchenCompartment: Destroying... [id=ocid1.compartment.oc1..aaaaaaaagillnk7ttj6wpdhmewpibpxc5gbmrfxdtmaa3gfgjzbudesm3tsq]
 oci_identity_compartment.FoggyKitchenCompartment: Destruction complete after 0s
 
-Destroy complete! Resources: 12 destroyed.
+Destroy complete! Resources: 10 destroyed.
 ```
