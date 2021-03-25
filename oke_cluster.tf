@@ -32,18 +32,23 @@ resource "oci_containerengine_node_pool" "FoggyKitchenOKENodePool" {
   compartment_id     = oci_identity_compartment.FoggyKitchenCompartment.id
   kubernetes_version = var.kubernetes_version
   name               = "FoggyKitchenOKENodePool"
-  node_shape         = var.Shapes[0]
+  node_shape         = var.Shape
   
   node_source_details {
     image_id = local.oracle_linux_images.0
     source_type = "IMAGE"
   }
 
+  node_shape_config {
+    ocpus = 2
+    memory_in_gbs = 40
+  }
+
   node_config_details {
     size      = var.node_pool_size
 
     placement_configs {
-      availability_domain = lookup(data.oci_identity_availability_domains.ADs.availability_domains[1], "name")
+      availability_domain = lookup(data.oci_identity_availability_domains.ADs.availability_domains[0], "name")
       subnet_id           = oci_core_subnet.FoggyKitchenNodePoolSubnet.id
     }  
   }
